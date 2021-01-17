@@ -43,10 +43,6 @@ template <typename OutputIt>
 inline OutputIt u64_to_bytes(uint64_t value, bool is_big_endian,
                              OutputIt output_it);
 
-template <typename OutputIt>
-inline OutputIt create_bytes_from_bits(const vector<bool> &bits,
-                                       OutputIt output_it);
-
 /**
  * @brief Convert the specified single-precision floating-point value to bytes.
  */
