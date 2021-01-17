@@ -7,76 +7,92 @@ namespace bit_converter {
 
 using std::vector;
 
-inline vector<uint8_t> i16_to_bytes(int16_t value, bool is_big_endian) {
-  vector<uint8_t> result;
-  result.reserve(sizeof(int16_t));
+template <typename OutputIt>
+inline OutputIt i16_to_bytes(int16_t value, bool is_big_endian,
+                             OutputIt output_it) {
   if (is_big_endian) {
-    result.push_back(static_cast<uint8_t>(value >> 8));
-    result.push_back(static_cast<uint8_t>(value & 0xFF));
+    *output_it = static_cast<uint8_t>(value >> 8);
+    output_it++;
+    *output_it = static_cast<uint8_t>(value & 0xFF);
+    output_it++;
   } else {
-    result.push_back(static_cast<uint8_t>(value & 0xFF));
-    result.push_back(static_cast<uint8_t>(value >> 8));
+    *output_it = static_cast<uint8_t>(value & 0xFF);
+    output_it++;
+    *output_it = static_cast<uint8_t>(value >> 8);
+    output_it++;
   }
-  return result;
+  return output_it;
 }
 
-inline vector<uint8_t> u16_to_bytes(uint16_t value, bool is_big_endian) {
-  return i16_to_bytes(static_cast<uint16_t>(value), is_big_endian);
+template <typename OutputIt>
+inline OutputIt u16_to_bytes(uint16_t value, bool is_big_endian,
+                             OutputIt output_it) {
+  return i16_to_bytes(static_cast<uint16_t>(value), is_big_endian, output_it);
 }
 
-inline vector<uint8_t> i32_to_bytes(int32_t value, bool is_big_endian) {
-  vector<uint8_t> result;
-  result.reserve(sizeof(int32_t));
+template <typename OutputIt>
+inline OutputIt i32_to_bytes(int32_t value, bool is_big_endian,
+                             OutputIt output_it) {
   if (is_big_endian) {
     for (int i = 0; i < sizeof(int32_t); i++) {
-      result.push_back(static_cast<uint8_t>((value >> (24 - i * 8)) & 0xFF));
+      *output_it = static_cast<uint8_t>((value >> (24 - i * 8)) & 0xFF);
+      output_it++;
     }
   } else {
     for (int i = sizeof(int32_t) - 1; i >= 0; i--) {
-      result.push_back(static_cast<uint8_t>((value >> (24 - i * 8)) & 0xFF));
+      *output_it = static_cast<uint8_t>((value >> (24 - i * 8)) & 0xFF);
+      output_it++;
     }
   }
-  return result;
+  return output_it;
 }
 
-inline vector<uint8_t> u32_to_bytes(uint32_t value, bool is_big_endian) {
-  return i32_to_bytes(static_cast<int32_t>(value), is_big_endian);
+template <typename OutputIt>
+inline OutputIt u32_to_bytes(uint32_t value, bool is_big_endian,
+                             OutputIt output_it) {
+  return i32_to_bytes(static_cast<int32_t>(value), is_big_endian, output_it);
 }
 
-inline vector<uint8_t> i64_to_bytes(int64_t value, bool is_big_endian) {
-  vector<uint8_t> result;
-  result.reserve(sizeof(int64_t));
+template <typename OutputIt>
+inline OutputIt i64_to_bytes(int64_t value, bool is_big_endian,
+                             OutputIt output_it) {
   if (is_big_endian) {
     for (int i = 0; i < sizeof(int64_t); i++) {
-      result.push_back(static_cast<uint8_t>((value >> (56 - i * 8)) & 0xFF));
+      *output_it = static_cast<uint8_t>((value >> (56 - i * 8)) & 0xFF);
+      output_it++;
     }
   } else {
     for (int i = sizeof(int64_t) - 1; i >= 0; i--) {
-      result.push_back(static_cast<uint8_t>((value >> (56 - i * 8)) & 0xFF));
+      *output_it = static_cast<uint8_t>((value >> (56 - i * 8)) & 0xFF);
+      output_it++;
     }
   }
-  return result;
+  return output_it;
 }
 
-inline vector<uint8_t> u64_to_bytes(uint64_t value, bool is_big_endian) {
-  return i64_to_bytes(static_cast<int64_t>(value), is_big_endian);
+template <typename OutputIt>
+inline OutputIt u64_to_bytes(uint64_t value, bool is_big_endian,
+                             OutputIt output_it) {
+  return i64_to_bytes(static_cast<int64_t>(value), is_big_endian, output_it);
 }
 
-inline vector<uint8_t> create_bytes_from_bits(const vector<bool> &bits) {
-  vector<uint8_t> result;
-  size_t n = bits.size() / 8;
-  result.reserve(n);
-  for (int i = 0; i < static_cast<int>(n); i++) {
+template <typename OutputIt>
+inline OutputIt create_bytes_from_bits(const vector<bool> &bits,
+                                       OutputIt output_it) {
+  for (int i = 0; i < static_cast<int>(bits.size() / 8); i++) {
     uint8_t b = 0;
     for (int j = 0; j < 8; j++) {
       b = b + (bits[i * 8 + j] << j);
     }
-    result.push_back(b);
+    *output_it = b;
+    output_it++;
   }
-  return result;
+  return output_it;
 }
 
-inline vector<uint8_t> f32_to_bytes(float_t value, bool is_big_endian) {
+template <typename OutputIt>
+inline OutputIt f32_to_bytes(float_t value, bool is_big_endian,
+                             OutputIt output_it) {
   vector<bool> bits;
   bits.reserve(sizeof(float_t) * 8);
   bits.push_back(value < 0);
@@ -101,14 +117,16 @@ inline vector<uint8_t> f32_to_bytes(float_t value, bool is_big_endian) {
     }
   }
   if (is_big_endian) {
-    return create_bytes_from_bits(bits);
+    return create_bytes_from_bits(bits, output_it);
   } else {
     std::reverse(bits.begin(), bits.end());
-    return create_bytes_from_bits(bits);
+    return create_bytes_from_bits(bits, output_it);
   }
 }
 
-inline vector<uint8_t> f64_to_bytes(double_t value, bool is_big_endian) {
+template <typename OutputIt>
+inline OutputIt f64_to_bytes(double_t value, bool is_big_endian,
+                             OutputIt output_it) {
   vector<bool> bits;
   bits.reserve(sizeof(double_t) * 8);
   bits.push_back(value < 0);
@@ -133,11 +151,70 @@ inline vector<uint8_t> f64_to_bytes(double_t value, bool is_big_endian) {
     }
   }
   if (is_big_endian) {
-    return create_bytes_from_bits(bits);
+    return create_bytes_from_bits(bits, output_it);
   } else {
     std::reverse(bits.begin(), bits.end());
-    return create_bytes_from_bits(bits);
+    return create_bytes_from_bits(bits, output_it);
   }
 }
 
+template <typename InputIt>
+inline float_t bytes_to_f32(InputIt input_it, bool is_big_endian) {
+  vector<bool> bits;
+  bits.reserve(sizeof(float_t) * 8);
+  for (int i = 0; i < static_cast<int>(sizeof(float_t)); i++) {
+    uint8_t b = *input_it;
+    input_it++;
+    for (int j = 0; j < 8; j++) {
+      bits.push_back(b % 2);
+      b = b / 2;
+    }
+  }
+  if (!is_big_endian) {
+    std::reverse(bits.begin(), bits.end());
+  }
+  int sign = bits[0] ? (-1) : (+1);
+  int exponent = 0;
+  for (int i = 0; i < 8; i++) {
+    exponent = exponent + bits[1 + i] * (1 << (8 - 1 - i));
+  }
+  exponent = exponent - 127;
+  float_t mantissa = 1.0;
+  float_t cur = 0.5;
+  for (int i = 0; i < 23; i++) {
+    mantissa = mantissa + bits[1 + 8 + i] * cur;
+    cur = cur / 2;
+  }
+  return sign * std::ldexp(mantissa, exponent);
+}
+
+template <typename InputIt>
+inline double_t bytes_to_f64(InputIt input_it, bool is_big_endian) {
+  vector<bool> bits;
+  bits.reserve(sizeof(double_t) * 8);
+  for (int i = 0; i < static_cast<int>(sizeof(double_t)); i++) {
+    uint8_t b = *input_it;
+    input_it++;
+    for (int j = 0; j < 8; j++) {
+      bits.push_back(b % 2);
+      b = b / 2;
+    }
+  }
+  if (!is_big_endian) {
+    std::reverse(bits.begin(), bits.end());
+  }
+  int sign = bits[0] ? (-1) : (+1);
+  int exponent = 0;
+  for (int i = 0; i < 11; i++) {
+    exponent = exponent + bits[1 + i] * (1 << (11 - 1 - i));
+  }
+  exponent = exponent - 1023;
+  double_t mantissa = 1.0;
+  double_t cur = 0.5;
+  for (int i = 0; i < 52; i++) {
+    mantissa = mantissa + bits[1 + 11 + i] * cur;
+    cur = cur / 2;
+  }
+  return sign * std::ldexp(mantissa, exponent);
+}
 }; // namespace bit_converter
