@@ -18,3 +18,18 @@ TEST_CASE("test i16 to bytes", "[i16]") {
     REQUIRE(get_bytes(30000, false) == vector<uint8_t>{48, 117});
   }
 }
+
+TEST_CASE("test bytes to i16", "[i16]") {
+  auto to_i16 = [](const vector<uint8_t> &bytes,
+                   bool is_big_endian) -> int16_t {
+    return bit_converter::bytes_to_i16(bytes.begin(), is_big_endian);
+  };
+  SECTION("value < 256") {
+    REQUIRE(to_i16(vector<uint8_t>{239, 18}, true) == -4334);
+    REQUIRE(to_i16(vector<uint8_t>{18, 239}, false) == -4334);
+  }
+  SECTION("value >= 256") {
+    REQUIRE(to_i16(vector<uint8_t>{117, 48}, true) == 30000);
+    REQUIRE(to_i16(vector<uint8_t>{48, 117}, false) == 30000);
+  }
+}

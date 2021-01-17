@@ -159,6 +159,23 @@ inline OutputIt f64_to_bytes(double_t value, bool is_big_endian,
 }
 
 template <typename InputIt>
+inline int16_t bytes_to_i16(InputIt input_it, bool is_big_endian) {
+  if (is_big_endian) {
+    int16_t result = *input_it;
+    input_it++;
+    result = (result << 8) + *input_it;
+    input_it++;
+    return result;
+  } else {
+    int16_t result = *input_it;
+    input_it++;
+    result = result + (static_cast<int16_t>(*input_it) << 8);
+    input_it++;
+    return result;
+  }
+}
+
+template <typename InputIt>
 inline float_t bytes_to_f32(InputIt input_it, bool is_big_endian) {
   vector<bool> bits;
   bits.reserve(sizeof(float_t) * 8);
@@ -217,4 +234,5 @@ inline double_t bytes_to_f64(InputIt input_it, bool is_big_endian) {
   }
   return sign * std::ldexp(mantissa, exponent);
 }
+
 }; // namespace bit_converter
