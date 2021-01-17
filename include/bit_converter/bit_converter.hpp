@@ -176,6 +176,29 @@ inline int16_t bytes_to_i16(InputIt input_it, bool is_big_endian) {
 }
 
 template <typename InputIt>
+inline uint16_t bytes_to_u16(InputIt input_it, bool is_big_endian) {
+  return static_cast<uint16_t>(bytes_to_i16(input_it, is_big_endian));
+}
+
+template <typename InputIt>
+inline int32_t bytes_to_i32(InputIt input_it, bool is_big_endian) {
+  int32_t result = 0;
+  if (is_big_endian) {
+    for (int i = 0; i < static_cast<int>(sizeof(int32_t)); i++) {
+      result = result + ((*input_it) << (8 * (4 - 1 - i)));
+      input_it++;
+    }
+    return result;
+  } else {
+    for (int i = 0; i < static_cast<int>(sizeof(int32_t)); i++) {
+      result = result + ((*input_it) << (8 * i));
+      input_it++;
+    }
+    return result;
+  }
+}
+
+template <typename InputIt>
 inline float_t bytes_to_f32(InputIt input_it, bool is_big_endian) {
   vector<bool> bits;
   bits.reserve(sizeof(float_t) * 8);
