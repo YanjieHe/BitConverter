@@ -1,5 +1,30 @@
 # BitConverter
 
+A C++ port of the C# BitConverter class. Convert bytes to base data types, and base data types to bytes.
+
+## Installation
+
+Copy the header file `include/bit_converter/bit_converter.hpp` to your project.
+
+## Examples
+
+Convert the 32-bit signed integer `943561` to bytes:
+
+```cpp
+vector<uint8_t> bytes(sizeof(int32_t));
+int32_t value = 94356;
+bit_converter::i32_to_bytes(value, true, bytes.begin());
+```
+
+Convert the eight bytes to a double-precision floating-point value.
+
+```cpp
+vector<uint8_t> bytes{31, 133, 235, 81, 184, 30, 9, 64};
+double_t value = bit_converter::bytes_to_f64(bytes.begin(), false);
+cout << "value = " << value << endl;
+```
+
+## API
 ```cpp
 /**
  * @brief Convert the specified 16-bit signed integer value to bytes.
@@ -100,14 +125,14 @@ template <typename InputIt>
 inline uint64_t bytes_to_u64(InputIt input_it, bool is_big_endian);
 
 /**
- * @brief Returns a single-precision floating point number converted from four
+ * @brief Returns a single-precision floating-point number converted from four
  * bytes at a specified position in a byte sequence.
  */
 template <typename InputIt>
 inline float_t bytes_to_f32(InputIt input_it, bool is_big_endian);
 
 /**
- * @brief Returns a double-precision floating point number converted from eight
+ * @brief Returns a double-precision floating-point number converted from eight
  * bytes at a specified position in a byte sequence.
  */
 template <typename InputIt>

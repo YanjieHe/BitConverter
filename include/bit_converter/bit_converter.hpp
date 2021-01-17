@@ -298,7 +298,7 @@ inline uint64_t bytes_to_u64(InputIt input_it, bool is_big_endian) {
 }
 
 /**
- * @brief Returns a single-precision floating point number converted from four
+ * @brief Returns a single-precision floating-point number converted from four
  * bytes at a specified position in a byte sequence.
  */
 template <typename InputIt>
@@ -332,7 +332,7 @@ inline float_t bytes_to_f32(InputIt input_it, bool is_big_endian) {
 }
 
 /**
- * @brief Returns a double-precision floating point number converted from eight
+ * @brief Returns a double-precision floating-point number converted from eight
  * bytes at a specified position in a byte sequence.
  */
 template <typename InputIt>
