@@ -66,12 +66,12 @@ template <typename OutputIt>
 inline OutputIt i32_to_bytes(int32_t value, bool is_big_endian,
                              OutputIt output_it) {
   if (is_big_endian) {
-    for (int i = 0; i < sizeof(int32_t); i++) {
+    for (int i = 0; i < static_cast<int>(sizeof(int32_t)); i++) {
       *output_it = static_cast<uint8_t>((value >> (24 - i * 8)) & 0xFF);
       output_it++;
     }
   } else {
-    for (int i = sizeof(int32_t) - 1; i >= 0; i--) {
+    for (int i = static_cast<int>(sizeof(int32_t)) - 1; i >= 0; i--) {
       *output_it = static_cast<uint8_t>((value >> (24 - i * 8)) & 0xFF);
       output_it++;
     }
@@ -95,12 +95,12 @@ template <typename OutputIt>
 inline OutputIt i64_to_bytes(int64_t value, bool is_big_endian,
                              OutputIt output_it) {
   if (is_big_endian) {
-    for (int i = 0; i < sizeof(int64_t); i++) {
+    for (int i = 0; i < static_cast<int>(sizeof(int64_t)); i++) {
       *output_it = static_cast<uint8_t>((value >> (56 - i * 8)) & 0xFF);
       output_it++;
     }
   } else {
-    for (int i = sizeof(int64_t) - 1; i >= 0; i--) {
+    for (int i = static_cast<int>(sizeof(int64_t)) - 1; i >= 0; i--) {
       *output_it = static_cast<uint8_t>((value >> (56 - i * 8)) & 0xFF);
       output_it++;
     }

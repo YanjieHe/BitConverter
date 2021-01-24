@@ -138,3 +138,8 @@ inline float_t bytes_to_f32(InputIt input_it, bool is_big_endian);
 template <typename InputIt>
 inline double_t bytes_to_f64(InputIt input_it, bool is_big_endian);
 ```
+
+## Run Tests
+
+1. install xmake: [Link](https://github.com/xmake-io/xmake)
+2. type `xmake run` in your terminal
